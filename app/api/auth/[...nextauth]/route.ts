@@ -3,7 +3,8 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 // import GoogleProvider from 'next-auth/providers/google'
 
 const handler = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || 'fallback-secret-for-development',
+  url: process.env.NEXTAUTH_URL,
   providers: [
     // GoogleProvider({
     //   clientId: process.env.GOOGLE_CLIENT_ID || '',
