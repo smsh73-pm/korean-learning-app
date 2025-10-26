@@ -93,18 +93,14 @@ export class ClaudeService {
     systemPrompt?: string
   ): Promise<AIResponse> {
     try {
-      const response = await anthropic.messages.create({
+      const response = await anthropic.completions.create({
         model: 'claude-3-sonnet-20240229',
-        max_tokens: 1000,
-        system: systemPrompt || 'You are a helpful Korean language learning assistant.',
-        messages: messages.map(msg => ({
-          role: msg.role === 'assistant' ? 'assistant' : 'user',
-          content: msg.content,
-        })),
+        max_tokens_to_sample: 1000,
+        prompt: `${systemPrompt || 'You are a helpful Korean language learning assistant.'}\n\n${messages.map(msg => `${msg.role}: ${msg.content}`).join('\n')}`,
       })
 
       return {
-        content: response.content[0]?.type === 'text' ? response.content[0].text : '',
+        content: response.completion,
         model: 'claude-3-sonnet',
       }
     } catch (error) {
