@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn, signUp } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -35,7 +35,7 @@ export function WelcomeScreen() {
           alert('Passwords do not match')
           return
         }
-        await signUp('credentials', {
+        await signIn('credentials', {
           name: formData.name,
           email: formData.email,
           password: formData.password,
