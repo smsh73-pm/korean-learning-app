@@ -16,7 +16,7 @@ interface Question {
   options?: string[]
   correctAnswer: string | number
   level: number
-  skill: 'reading' | 'writing' | 'listening' | 'speaking'
+  skill: 'reading' | 'writing' | 'listening' | 'speaking' | 'grammar' | 'vocabulary' | 'culture'
 }
 
 const sampleQuestions: Question[] = [
