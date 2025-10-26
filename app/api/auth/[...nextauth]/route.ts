@@ -1,9 +1,14 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -40,16 +45,20 @@ const handler = NextAuth({
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
-        token.koreanLevel = user.koreanLevel
+        token.koreanLevel = (user as any).koreanLevel || 0
+      }
+      // Set koreanLevel for Google OAuth users
+      if (account?.provider === 'google' && !token.koreanLevel) {
+        token.koreanLevel = 0
       }
       return token
     },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.sub!
-        session.user.koreanLevel = token.koreanLevel
+        session.user.koreanLevel = (token.koreanLevel as number) || 0
       }
       return session
     },
