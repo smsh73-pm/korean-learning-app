@@ -19,7 +19,7 @@ interface Lesson {
   title: string
   description: string
   level: number
-  skill: 'reading' | 'writing' | 'listening' | 'speaking' | 'culture'
+  skill: 'reading' | 'writing' | 'listening' | 'speaking' | 'culture' | 'vocabulary' | 'grammar'
   duration: string
   isCompleted: boolean
   isLocked: boolean
