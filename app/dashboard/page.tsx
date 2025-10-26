@@ -1,9 +1,12 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/components/providers/LanguageProvider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { 
   BookOpen, 
   Target, 
@@ -16,8 +19,23 @@ import {
 } from 'lucide-react'
 
 export default function DashboardPage() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const { t } = useLanguage()
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/')
+    }
+  }, [status, router])
+
+  if (status === 'loading') {
+    return <LoadingSpinner />
+  }
+
+  if (status === 'unauthenticated') {
+    return null
+  }
 
   const stats = [
     {

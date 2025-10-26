@@ -1,8 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useLanguage } from '@/components/providers/LanguageProvider'
 import { 
   BookOpen, 
@@ -85,9 +88,25 @@ const sampleLessons: Lesson[] = [
 ]
 
 export default function LearnPage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const { t } = useLanguage()
   const [selectedSkill, setSelectedSkill] = useState<string>('all')
   const [selectedLevel, setSelectedLevel] = useState<number>(1)
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/')
+    }
+  }, [status, router])
+
+  if (status === 'loading') {
+    return <LoadingSpinner />
+  }
+
+  if (status === 'unauthenticated') {
+    return null
+  }
 
   const skills = [
     { id: 'all', name: 'All Skills', icon: BookOpen },
