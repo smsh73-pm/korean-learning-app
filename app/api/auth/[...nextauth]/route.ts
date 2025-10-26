@@ -21,6 +21,45 @@ const handler = NextAuth({
           return null
         }
 
+        // Admin test account
+        if (credentials.email === 'admin@korean-learning.com' && credentials.password === 'admin123') {
+          return {
+            id: 'admin-1',
+            email: 'admin@korean-learning.com',
+            name: 'Admin User',
+            koreanLevel: 5,
+            role: 'admin',
+          }
+        }
+
+        // Test accounts for different levels
+        if (credentials.email === 'beginner@test.com' && credentials.password === 'test123') {
+          return {
+            id: '2',
+            email: 'beginner@test.com',
+            name: 'Beginner User',
+            koreanLevel: 1,
+          }
+        }
+
+        if (credentials.email === 'intermediate@test.com' && credentials.password === 'test123') {
+          return {
+            id: '3',
+            email: 'intermediate@test.com',
+            name: 'Intermediate User',
+            koreanLevel: 3,
+          }
+        }
+
+        if (credentials.email === 'advanced@test.com' && credentials.password === 'test123') {
+          return {
+            id: '4',
+            email: 'advanced@test.com',
+            name: 'Advanced User',
+            koreanLevel: 5,
+          }
+        }
+
         // Handle sign up
         if (credentials.name) {
           return {

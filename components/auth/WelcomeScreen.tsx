@@ -187,6 +187,17 @@ export function WelcomeScreen() {
                   Continue with Google (Coming Soon)
                 </Button>
               </div>
+
+              {/* Test Account Information */}
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-sm font-semibold text-blue-800 mb-2">테스트 계정 정보</h3>
+                <div className="text-xs text-blue-700 space-y-1">
+                  <div><strong>관리자:</strong> admin@korean-learning.com / admin123</div>
+                  <div><strong>초급자:</strong> beginner@test.com / test123</div>
+                  <div><strong>중급자:</strong> intermediate@test.com / test123</div>
+                  <div><strong>고급자:</strong> advanced@test.com / test123</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
