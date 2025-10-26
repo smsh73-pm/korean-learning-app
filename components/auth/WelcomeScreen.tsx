@@ -180,10 +180,11 @@ export function WelcomeScreen() {
               <div className="mt-4 text-center">
                 <Button
                   variant="outline"
-                  onClick={() => signIn('google')}
+                  onClick={() => alert('Google login is temporarily disabled. Please use email/password login.')}
                   className="w-full"
+                  disabled
                 >
-                  Continue with Google
+                  Continue with Google (Coming Soon)
                 </Button>
               </div>
             </CardContent>
