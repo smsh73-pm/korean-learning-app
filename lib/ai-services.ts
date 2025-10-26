@@ -2,16 +2,16 @@ import OpenAI from 'openai'
 import Anthropic from '@anthropic-ai/sdk'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// Initialize AI clients
-const openai = new OpenAI({
+// Initialize AI clients (only if API keys are available)
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-})
+}) : null
 
-const anthropic = new Anthropic({
+const anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
-})
+}) : null
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!)
+const genAI = process.env.GOOGLE_AI_API_KEY ? new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY) : null
 
 // AI Service Types
 export interface AIResponse {
@@ -35,6 +35,10 @@ export class OpenAIService {
     messages: ConversationMessage[],
     systemPrompt?: string
   ): Promise<AIResponse> {
+    if (!openai) {
+      throw new Error('OpenAI API key not configured')
+    }
+    
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -92,6 +96,10 @@ export class ClaudeService {
     messages: ConversationMessage[],
     systemPrompt?: string
   ): Promise<AIResponse> {
+    if (!anthropic) {
+      throw new Error('Anthropic API key not configured')
+    }
+    
     try {
       const response = await anthropic.completions.create({
         model: 'claude-3-sonnet-20240229',
@@ -151,6 +159,10 @@ export class GeminiService {
     prompt: string,
     systemPrompt?: string
   ): Promise<AIResponse> {
+    if (!genAI) {
+      throw new Error('Google AI API key not configured')
+    }
+    
     try {
       const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
       
