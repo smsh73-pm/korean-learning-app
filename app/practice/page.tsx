@@ -78,7 +78,7 @@ const conversationPartners: ConversationPartner[] = [
 
 export default function PracticePage() {
   const { t } = useLanguage()
-  const { isListening, isSupported, startListening, stopListening, transcript, error } = useVoice()
+  const { isListening, isSupported, startListening, stopListening, resetTranscript, transcript, error } = useVoice()
   const [selectedPartner, setSelectedPartner] = useState<ConversationPartner | null>(null)
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string, timestamp: Date }>>([])
   const [isSpeaking, setIsSpeaking] = useState(false)
@@ -95,17 +95,20 @@ export default function PracticePage() {
   const handleVoiceInput = async () => {
     if (isListening) {
       stopListening()
-      if (transcript) {
+      if (transcript.trim()) {
+        const userTranscript = transcript
         setMessages(prev => [...prev, {
           role: 'user',
-          content: transcript,
+          content: userTranscript,
           timestamp: new Date()
         }])
+        resetTranscript()
+        
         // Simulate AI response
         setTimeout(() => {
           setMessages(prev => [...prev, {
             role: 'assistant',
-            content: 'That\'s great! Let me help you with that. Can you tell me more?',
+            content: '안녕하세요! Let me help you with that. Can you tell me more?',
             timestamp: new Date()
           }])
         }, 1000)
