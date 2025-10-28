@@ -93,6 +93,7 @@ export default function LearnPage() {
   const { t } = useLanguage()
   const [selectedSkill, setSelectedSkill] = useState<string>('all')
   const [selectedLevel, setSelectedLevel] = useState<number>(1)
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -134,6 +135,26 @@ export default function LearnPage() {
       grammar: 'bg-red-100 text-red-800',
     }
     return colors[skill as keyof typeof colors] || 'bg-gray-100 text-gray-800'
+  }
+
+  const handleStartLesson = (lesson: Lesson) => {
+    if (lesson.isLocked) {
+      alert('이 레슨은 아직 잠겨있습니다. 이전 레슨을 완료해주세요.')
+      return
+    }
+    setSelectedLesson(lesson)
+  }
+
+  const handleCompleteLesson = () => {
+    if (selectedLesson) {
+      // 실제 구현에서는 API 호출로 완료 상태 업데이트
+      alert(`${selectedLesson.title} 레슨을 완료했습니다!`)
+      setSelectedLesson(null)
+    }
+  }
+
+  const handleCloseLesson = () => {
+    setSelectedLesson(null)
   }
 
   return (
@@ -261,6 +282,7 @@ export default function LearnPage() {
                       variant={lesson.isCompleted ? "outline" : "primary"}
                       disabled={lesson.isLocked}
                       className="min-w-[100px]"
+                      onClick={() => handleStartLesson(lesson)}
                     >
                       {lesson.isCompleted ? 'Review' : lesson.isLocked ? 'Locked' : 'Start'}
                     </Button>
@@ -286,6 +308,107 @@ export default function LearnPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Lesson Modal */}
+      {selectedLesson && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-xl">{selectedLesson.title}</CardTitle>
+                <p className="text-sm text-gray-600 mt-1">{selectedLesson.description}</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleCloseLesson}
+                className="ml-4"
+              >
+                ✕
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Lesson Content */}
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                  <div className="flex items-center space-x-1">
+                    <Clock className="w-4 h-4" />
+                    <span>{selectedLesson.duration}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Target className="w-4 h-4" />
+                    <span>Level {selectedLesson.level}</span>
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSkillColor(selectedLesson.skill)}`}>
+                    {selectedLesson.skill}
+                  </span>
+                </div>
+
+                {/* Sample Lesson Content */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3">레슨 내용</h4>
+                  {selectedLesson.skill === 'reading' && (
+                    <div className="space-y-3">
+                      <p className="text-lg">안녕하세요 (annyeonghaseyo) - Hello</p>
+                      <p className="text-lg">감사합니다 (gamsahamnida) - Thank you</p>
+                      <p className="text-lg">죄송합니다 (joesonghamnida) - Sorry</p>
+                    </div>
+                  )}
+                  {selectedLesson.skill === 'speaking' && (
+                    <div className="space-y-3">
+                      <p className="text-lg">제 이름은 [이름]입니다. (je ireumeun [name]imnida)</p>
+                      <p className="text-lg">만나서 반갑습니다. (mannaseo bangapseumnida)</p>
+                      <p className="text-lg">어디서 오셨나요? (eodiseo osyeotnayo?)</p>
+                    </div>
+                  )}
+                  {selectedLesson.skill === 'vocabulary' && (
+                    <div className="space-y-3">
+                      <p className="text-lg">가족 (gajok) - Family</p>
+                      <p className="text-lg">친구 (chingu) - Friend</p>
+                      <p className="text-lg">학교 (hakgyo) - School</p>
+                    </div>
+                  )}
+                  {selectedLesson.skill === 'grammar' && (
+                    <div className="space-y-3">
+                      <p className="text-lg">~입니다 (~imnida) - Formal ending</p>
+                      <p className="text-lg">~어요 (~eoyo) - Polite ending</p>
+                      <p className="text-lg">~아요 (~ayo) - Polite ending</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Practice Section */}
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-3">연습 문제</h4>
+                  <p className="text-gray-600 mb-3">다음 문장을 한국어로 번역해보세요:</p>
+                  <div className="space-y-2">
+                    <p className="text-sm">1. "Hello, my name is John."</p>
+                    <p className="text-sm">2. "Nice to meet you."</p>
+                    <p className="text-sm">3. "Thank you very much."</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-3 pt-4 border-t">
+                <Button
+                  variant="outline"
+                  onClick={handleCloseLesson}
+                  className="flex-1"
+                >
+                  나중에 하기
+                </Button>
+                <Button
+                  onClick={handleCompleteLesson}
+                  className="flex-1"
+                >
+                  레슨 완료
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
